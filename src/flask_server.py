@@ -40,21 +40,30 @@ def create_instance_container():
     if 'major' not in json_obj:
         return "", 409
     result = manager.launch_container(json_obj)
-    return "", 200
+    json_obj["instance"] = result
+    return json_obj, 200
 
 
 @app.route('/list', methods=['GET'])
 def get_running_instance_list():
-    return
+    result = manager.get_instances()
+    return result, 200
 
 
 @app.route('/destroy/<instance>', methods=['DELETE'])
-def destroy_running_instance():
-    return
+def destroy_running_instance(instance):
+    result = manager.get_instances()["instances"]
+    for ins in result:
+        if instance in ins:
+            result.remove(ins)
+            return "", 200
+    return "", 400
 
 @app.route('/destroyall/', methods=['DELETE'])
 def destroy_all():
-    return
+    result = manager.get_instances()["instances"]
+    result.clear()
+    return "", 200
 
     
 
