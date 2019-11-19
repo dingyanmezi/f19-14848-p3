@@ -5,6 +5,8 @@ import os.path
 from os import path
 import tarfile
 import json
+from multiprocessing import Process
+
 instances = []
 
 class manager:
@@ -42,6 +44,9 @@ class manager:
         
         return json_obj
 
+    def launch_container_process(port):
+        os.system('sudo chroot basefs /bin/bash -c "export PORT=' + port + ' && /webserver/tiny.sh"')
+
     def launch_container(data):
         global instances
         config = configparser.RawConfigParser()
@@ -58,12 +63,10 @@ class manager:
         port = config.get(sectionName, 'startup_env').split(";")[0].split('=')[-1]
         print(port)
         
-        
-        
         os.chdir("../base_images/")
         os.system("mkdir " + sectionName)
         os.chdir("../base_images/" + sectionName)
-        pathForContainer = os.getcwd()
+        pathForContainer = os.getcwd()     # inside sensible-1-01 directory
         with tarfile.open("../basefs.tar.gz") as tar:
             tar.extractall(path=pathForContainer)
     
@@ -71,29 +74,35 @@ class manager:
         
         for mount in mounts:
             mountNoSpace = mount.split()
-            mountTarFile = mountNoSpace[0].split("'")[-1]
-            mountTarFileDes = mountNoSpace[1]
-            desDirName = ""
+            mountTarFile = mountNoSpace[0].split("'")[-1]   # potato.tar
+            mountTarFileDes = mountNoSpace[1]               # /webserver/potato
+            desDirName = ""                                 # "potato" directory
             if ( mountTarFileDes.split('/')[-1] != "/"):
-                desDirName = mountTarFileDes.split('/')[-1]
-            state = mountNoSpace[-1].split("'")[0]
+                desDirName = mountTarFileDes.split('/')[-1]   
+            state = mountNoSpace[-1].split("'")[0]            #  READ
             print(state)
-            os.system("sudo mkdir " + desDirName)
-            os.system("sudo cp ../../mountables/" + mountTarFile + " ./" + desDirName)
-            os.system("sudo mkdir -p ./basefs" + mountTarFileDes)
+            os.system("mkdir " + desDirName)
+            os.system("cp ../../mountables/" + mountTarFile + " ./")
+            os.system("mkdir -p ./basefs" + mountTarFileDes)
+
+            with tarfile.open(mountTarFile) as tar1:
+                tar1.extractall(path=pathForContainer)
+
             if (state == "READ"):
                 os.system("sudo mount --bind -o ro $PWD/" + desDirName + " $PWD/basefs" + mountTarFileDes)
             elif (state == "READWRITE"):
                 os.system("sudo mount --bind -o rw $PWD/" + desDirName + " $PWD/basefs" + mountTarFileDes)
-        
-        os.system('sudo chroot basefs /bin/bash -c "export PORT=' + port + ' && /webserver/tiny.sh"')
+
+        container_process = Process(target=manager.launch_container_process, args=(port, ))
+        container_process.start()
+
         data["instance"] = cfgName
         instances.append(data)
 
         os.chdir("../../src")
 
         return cfgName
-    
+
     def get_instances():
         global instances
         result = {
