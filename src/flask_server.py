@@ -73,7 +73,10 @@ def destroy_all():
     # result.clear()
     return "", 200
 
-    
+@app.route('/list', methods=['GET'])
+def get_list_instances():
+    result = manager.get_instances()["instances"]
+    return result, 200
 
 def main():
     

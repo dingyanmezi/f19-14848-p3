@@ -153,39 +153,4 @@ class manager:
                 instances = [x for x in instances if x["instance"] != pid]
                 # instances.remove(instance)    ## just change it 
                 break
-                
-
-    # def kill_all_processes():
-    #     global processes
-    #     global instances
-    #     print(processes)
-    #     for process in processes:
-    #         pid = str(process.pid)
-	#     if (process.is_alive()):
-	# 	os.killpg(process.pid, signal.SIGKILL)
-    #     time.sleep(0.1)
-    #     print(process.is_alive())
-    #     print(processes)
-    #     for instance in instances:
-    #         if instance["instance"] == pid:
-    #             print("inside")
-    #             sectionName = instance["name"] + "-" + instance["major"] + "-" + instance["minor"]
-    #             config = configparser.RawConfigParser()
-    #             cfgName = sectionName + ".cfg"
-    #             thisfolder = os.path.dirname(os.path.abspath(__file__))
-    #             initfile = os.path.join(thisfolder, cfgName)
-    #             config.read(initfile)
-    #             mounts = config.get(sectionName, 'mounts').split(",")
-    #             for mount in mounts:
-    #                 mountTarFileDes = mount.split()[1]
-    #                 os.chdir("../base_images/")
-    #                 # if len(mountTarFileDes.split("/")) == 3:
-    #                 os.system("umount -l $PWD/"+ sectionName + "/basefs" + mountTarFileDes)
-    #                 os.chdir("../src")
-    #             os.chdir("../base_images/")
-    #             os.system('chroot ./'+ sectionName + '/basefs /bin/bash -c "umount proc"')
-    #             os.system("rm -rf ./" + sectionName)
-    #             os.chdir("../src")
-    #     processes.clear()
-    #     instances.clear()
                     
