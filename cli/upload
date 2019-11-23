@@ -1,0 +1,19 @@
+#!/usr/bin/python3
+
+import sys
+import json
+import requests
+
+HOSTNAME = "localhost"
+PORT = "8080"
+
+if __name__ == '__main__':
+    url = "http://" + HOSTNAME + ":" + PORT + "/config"
+    upload_filepath = sys.argv[1]
+    with open(upload_filepath, 'r') as fp:
+        config_obj = json.load(fp)
+    response = requests.post(url, json=config_obj)
+    if (response.status_code == 200):
+        print("success")
+    else:
+        print("failure: uploading file")

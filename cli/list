@@ -1,0 +1,13 @@
+#!/usr/bin/python3
+
+import requests
+
+HOSTNAME = "localhost"
+PORT = "8080"
+
+if __name__ == '__main__':
+    url = "http://" + HOSTNAME + ":" + PORT + "/list"
+    instances = requests.get(url).json()['instances']
+    for instance in instances:
+        print(instance['instance'])
+

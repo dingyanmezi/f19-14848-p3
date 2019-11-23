@@ -1,0 +1,19 @@
+#!/usr/bin/python3
+
+import requests, json, os, sys
+
+HOSTNAME = "localhost"
+PORT = "8080"
+
+url = "http://" + HOSTNAME + ":" + PORT + "/destroy/" + sys.argv[1]
+
+response = requests.delete(url)
+
+if(response.status_code == 200):
+    print("Success: ")
+else:
+    print("Failure: instance not found")
+
+
+
+

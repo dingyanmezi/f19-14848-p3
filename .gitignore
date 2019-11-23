@@ -1,0 +1,12 @@
+.DS_Store
+base_images/
+bin/
+cli.zip
+grading/
+lib/
+lib64
+pip-selfcheck.json
+pyvenv.cfg
+share/
+src/__pycache__/
+writeup.pdf
